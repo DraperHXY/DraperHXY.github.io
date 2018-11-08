@@ -1,0 +1,762 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="引例 123456789101112131415161718192021&amp;gt; &amp;gt;&amp;gt; public class A extends B &amp;#123;    public int a = 100;    public A() &amp;#123;        super()">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 类的加载顺序(题)">
+<meta property="og:url" content="http://DraperHXY.github.io/2018/11/09/Java-类的加载顺序-题/index.html">
+<meta property="og:site_name" content="Draper">
+<meta property="og:description" content="引例 123456789101112131415161718192021&amp;gt; &amp;gt;&amp;gt; public class A extends B &amp;#123;    public int a = 100;    public A() &amp;#123;        super();        System.out.println(a);        a = 200;    &amp;#125;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://draperhxy.github.io/2018/11/09/Java-类的加载顺序-题/1.png">
+<meta property="og:updated_time" content="2018-11-08T17:41:27.640Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 类的加载顺序(题)">
+<meta name="twitter:description" content="引例 123456789101112131415161718192021&amp;gt; &amp;gt;&amp;gt; public class A extends B &amp;#123;    public int a = 100;    public A() &amp;#123;        super();        System.out.println(a);        a = 200;    &amp;#125;">
+<meta name="twitter:image" content="http://draperhxy.github.io/2018/11/09/Java-类的加载顺序-题/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://DraperHXY.github.io/2018/11/09/Java-类的加载顺序-题/"/>
+
+
+
+
+
+  <title>Java 类的加载顺序(题) | Draper</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Draper</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://DraperHXY.github.io/2018/11/09/Java-类的加载顺序-题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Draper">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/upload/img/head_icon.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Draper">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java 类的加载顺序(题)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-09T01:32:14+08:00">
+                2018-11-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script src="/assets/js/APlayer.min.js"> </script><h3 id="引例"><a href="#引例" class="headerlink" title="引例"></a>引例</h3><blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&gt; </span><br><span class="line">&gt;</span><br><span class="line">&gt; public class A extends B &#123;</span><br><span class="line">    public int a = 100;</span><br><span class="line"></span><br><span class="line">    public A() &#123;</span><br><span class="line">        super();</span><br><span class="line">        System.out.println(a);</span><br><span class="line">        a = 200;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        System.out.println(new A().a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">   class B &#123;</span><br><span class="line">    public B() &#123;</span><br><span class="line">        System.out.println(((A) this).a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>例子代码很简单，不多做解释了，直接看输出:<br>100<br>200</p>
+<p>对照这个输出，我们来详细分析一下对象的初始化顺序：<br>1) 为A类分配内存空间，初始化所有成员变量为默认值，包括primitive类型(int=0,boolean=false,…)和Reference类型。<br>2) 调用A类构造函数。<br>3) 调用B类构造函数。<br>4) 调用Object空构造函数。（java编译器会默认加此构造函数，且object构造函数是个空函数，所以立即返回）<br>5) <strong>初始化B类成员变量，因为B类没有成员变量，跳过。</strong><br>6) 执行sysout输出子类A的成员变量小a。// 此时为0<br>7) <strong>初始化A类成员变量，将A类成员变量小a赋值100。</strong><br>8) 执行sysout输出当前A类的成员变量小a。// 此时为100<br>9) 赋值当前A类的成员变量小a为200。<br>10) main函数中执行sysout，输出A类实例的成员变量小a。// 此时为200</p>
+<p>加粗的那两行描述是重点，<strong>结论是成员变量初始化是在父类构造函数调用完后，在此之前，成员变量的值均是默认值</strong>。 Dzone作者就是栽在这里，没有仔细分析成员变量初始化在对象初始化中的顺序，造成了程序未按原意执行。<br>其实这类问题，熟悉原理是一方面，本质上只要不在构造函数中插入过多的业务逻辑，出问题的概率也会低很多。</p>
+</blockquote>
+<p>原文：<a href="http://jm.taobao.org/2010/07/21/331/" target="_blank" rel="noopener">剖析一个java对象初始化顺序问题</a></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><img src="/2018/11/09/Java-类的加载顺序-题/1.png" alt="类加载简单时序图"></h2><h3 id="阿里面试题"><a href="#阿里面试题" class="headerlink" title="阿里面试题"></a><a href="https://www.nowcoder.com/profile/9705855/myFollowings/detail/6718508" target="_blank" rel="noopener">阿里面试题</a></h3><p>程序的输出是什么？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class Base &#123;</span><br><span class="line">    private String baseName = &quot;base&quot;;</span><br><span class="line"></span><br><span class="line">    public Base() &#123;</span><br><span class="line">        callName();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void callName() &#123;</span><br><span class="line">        System.out.println(baseName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    static class Sub extends Base &#123;</span><br><span class="line">        private String baseName = &quot;sub&quot;;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void callName() &#123;</span><br><span class="line">            System.out.println(baseName);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Base b = new Sub();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>有了前面的引例，这道题答案就比较简单了</p>
+<h2 id="gt-答案-null"><a href="#gt-答案-null" class="headerlink" title="&gt; 答案: null"></a>&gt; 答案: null</h2><h3 id="完美世界2017校招技术综合A卷"><a href="#完美世界2017校招技术综合A卷" class="headerlink" title="完美世界2017校招技术综合A卷"></a><a href="https://www.nowcoder.com/profile/9705855/myFollowings/detail/6718407" target="_blank" rel="noopener">完美世界2017校招技术综合A卷</a></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public class Demo &#123;</span><br><span class="line">    class Super &#123;</span><br><span class="line">        int flag = 1;</span><br><span class="line"></span><br><span class="line">        Super() &#123;</span><br><span class="line">            test();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        void test() &#123;</span><br><span class="line">            System.out.println(&quot;Super.test() flag=&quot; + flag);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class Sub extends Super &#123;</span><br><span class="line">//        int flag;</span><br><span class="line"></span><br><span class="line">        Sub(int i) &#123;</span><br><span class="line">            flag = i;</span><br><span class="line">            System.out.println(&quot;Sub.Sub()flag=&quot; + flag);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        void test() &#123;</span><br><span class="line">            System.out.println(&quot;Sub.test()flag=&quot; + flag);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        new Demo().new Sub(5);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>答案:<br>Sub.test()flag=1<br>Sub.Sub()flag=5</p>
+</blockquote>
+<p>在我刚做这道题的时候也是有不少疑惑<br>为什么输出会是 1, 5 不应该是 0, 5 </p>
+<blockquote>
+<p>因为覆写了，没有指明 super 调用父类方法，父类的方法怎么都不可能被调用</p>
+</blockquote>
+<p>所以自己打断点查找原因得到一个规律<br>我将构造函数的执行化为 三个阶段<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class Super &#123;</span><br><span class="line">        int flag = 1; // ②</span><br><span class="line"></span><br><span class="line">        Super() &#123; // ①</span><br><span class="line">            test(); // ③</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        void test() &#123;</span><br><span class="line">            System.out.println(&quot;Super.test() flag=&quot; + flag);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过这个规律，我将注释写在先前的代码上</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public class Demo &#123;</span><br><span class="line">    class Super &#123;// ③ 除 Object 无继承，开始执行构造函数</span><br><span class="line">        int flag = 1; // ⑤ 加载成员变量完毕</span><br><span class="line"></span><br><span class="line">        Super() &#123; // ④ 程序运行到这里的时候，开始加载成员变量</span><br><span class="line">            test(); // ⑥ 调用子类方法</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        void test() &#123;</span><br><span class="line">            System.out.println(&quot;Super.test() flag=&quot; + flag);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    class Sub extends Super &#123;// ② Sub 类有父类，继续寻找</span><br><span class="line"></span><br><span class="line">        Sub(int i) &#123; // ⑧ 开始加载子类的构造函数</span><br><span class="line">            flag = i; // ⑨ 重新对父类变量 flag 赋值</span><br><span class="line">            System.out.println(&quot;Sub.Sub()flag=&quot; + flag); // ⑩ 对父类变量进行输出</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        void test() &#123;</span><br><span class="line">            System.out.println(&quot;Sub.test()flag=&quot; + flag); // ⑦ 输出父类的变量 flag</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        new Demo().new Sub(5); // ① 开始寻找 Sub 类</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>PS: 这些都是简单题，还有静态变量，静态类，内部类，内部静态类，内部静态类静态变量 try catch finally return 各种混合…</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/30/设计模式之状态模式小启发/" rel="next" title="设计模式之状态模式小启发">
+                <i class="fa fa-chevron-left"></i> 设计模式之状态模式小启发
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/upload/img/head_icon.jpg"
+               alt="Draper" />
+          <p class="site-author-name" itemprop="name">Draper</p>
+           
+              <p class="site-description motion-element" itemprop="description">记录生活点滴</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#引例"><span class="nav-number">1.</span> <span class="nav-text">引例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number"></span> <span class="nav-text"></span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#阿里面试题"><span class="nav-number">1.</span> <span class="nav-text">阿里面试题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gt-答案-null"><span class="nav-number"></span> <span class="nav-text">> 答案: null</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#完美世界2017校招技术综合A卷"><span class="nav-number">1.</span> <span class="nav-text">完美世界2017校招技术综合A卷</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Draper</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
